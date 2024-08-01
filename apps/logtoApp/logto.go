@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/danielgtaylor/huma/v2"
+	"github.com/go-resty/resty/v2"
 
 	"github.com/Jesuloba-world/xoom-server/apps/cloudinary"
 )
@@ -19,6 +20,7 @@ type LogtoApp struct {
 	cloudinary        *cloudinary.Cloudinary
 	api               huma.API
 	apiResourceUrl    string
+	client            *resty.Client
 }
 
 type tokenResponse struct {
@@ -36,6 +38,7 @@ func NewLogtoApp(endpoint, applicationId, applicationSecret string, cloudinary *
 		cloudinary:        cloudinary,
 		api:               api,
 		apiResourceUrl:    "http://localhost:10001",
+		client:            resty.New().SetHeader("Content-Type", "application/json"),
 	}
 
 	err := app.fetchAccessToken()

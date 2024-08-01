@@ -17,6 +17,7 @@ import (
 	logto "github.com/Jesuloba-world/xoom-server/apps/logtoApp"
 	userservice "github.com/Jesuloba-world/xoom-server/services/userService"
 	"github.com/Jesuloba-world/xoom-server/util"
+
 )
 
 func HttpCommand(db *bun.DB) *cli.Command {
@@ -43,7 +44,7 @@ func startHTTPServer(db *bun.DB) error {
 
 	corsMiddleware := cors.New(cors.Options{
 		AllowedOrigins: []string{"http://localhost:3000", "https://yourdomain.com"}, // Add your allowed origins
-		AllowedMethods: []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+		AllowedMethods: []string{"GET", "POST", "PATCH", "PUT", "DELETE", "OPTIONS"},
 		AllowedHeaders: []string{"Accept", "Authorization", "Content-Type", "X-CSRF-Token"},
 		ExposedHeaders: []string{"Link"},
 	})
