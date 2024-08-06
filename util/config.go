@@ -21,6 +21,7 @@ type Config struct {
 	CloudinaryApiKey       string `mapstructure:"CLOUDINARY_API_KEY"`
 	CloudinaryApiSecret    string `mapstructure:"CLOUDINARY_API_SECRET"`
 	CloudinaryCloudName    string `mapstructure:"CLOUDINARY_CLOUD_NAME"`
+	RedisUrl               string `mapstructure:"REDIS_URL"`
 }
 
 var (
@@ -59,6 +60,7 @@ func loadConfig() (Config, error) {
 		viper.BindEnv("CLOUDINARY_API_KEY")
 		viper.BindEnv("CLOUDINARY_API_SECRET")
 		viper.BindEnv("CLOUDINARY_CLOUD_NAME")
+		viper.BindEnv("REDIS_URL")
 
 		err = viper.Unmarshal(&config)
 		if err == nil {

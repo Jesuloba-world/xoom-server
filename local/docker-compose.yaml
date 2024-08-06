@@ -23,3 +23,11 @@ services:
       - postgres
     volumes:
       - ./pgadmin_data:/var/lib/pgadmin
+  
+  keydb:
+    image: eqalpha/keydb:latest
+    container_name: xoom_keydb
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./keydb_data:/data

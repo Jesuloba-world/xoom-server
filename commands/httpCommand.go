@@ -13,11 +13,12 @@ import (
 	"github.com/uptrace/bunrouter/extra/reqlog"
 	"github.com/urfave/cli/v2"
 
+	activemeetings "github.com/Jesuloba-world/xoom-server/apps/activeMeetings"
 	"github.com/Jesuloba-world/xoom-server/apps/cloudinary"
 	logto "github.com/Jesuloba-world/xoom-server/apps/logtoApp"
+	meetingservice "github.com/Jesuloba-world/xoom-server/services/meetingService"
 	userservice "github.com/Jesuloba-world/xoom-server/services/userService"
 	"github.com/Jesuloba-world/xoom-server/util"
-
 )
 
 func HttpCommand(db *bun.DB) *cli.Command {
@@ -37,13 +38,13 @@ func startHTTPServer(db *bun.DB) error {
 		slog.Error("Error reading config", "error", err)
 		os.Exit(1)
 	}
-	humaConfig := huma.DefaultConfig("Servv API", "1.0.0")
+	humaConfig := huma.DefaultConfig("Xoom API", "1.0.0")
 	router := bunrouter.New(
 		bunrouter.Use(reqlog.NewMiddleware()),
 	)
 
 	corsMiddleware := cors.New(cors.Options{
-		AllowedOrigins: []string{"http://localhost:3000", "https://yourdomain.com"}, // Add your allowed origins
+		AllowedOrigins: []string{"http://localhost:3000", "https://yourdomain.com"},
 		AllowedMethods: []string{"GET", "POST", "PATCH", "PUT", "DELETE", "OPTIONS"},
 		AllowedHeaders: []string{"Accept", "Authorization", "Content-Type", "X-CSRF-Token"},
 		ExposedHeaders: []string{"Link"},
@@ -66,8 +67,13 @@ func startHTTPServer(db *bun.DB) error {
 		os.Exit(1)
 	}
 
+	activeMeetings := activemeetings.NewActiveMeetingService(config.RedisUrl)
+
 	user := userservice.NewUserService(api, logto)
 	user.RegisterRoutes()
+
+	meeting := meetingservice.NewMeetingService(api, logto, activeMeetings)
+	meeting.RegisterRoutes()
 
 	slog.Info("Server starting", "port", port)
 	err = http.ListenAndServe(":"+port, handler)
