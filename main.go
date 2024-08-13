@@ -8,6 +8,7 @@ import (
 
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/jackc/pgx/v5/stdlib"
+	"github.com/redis/go-redis/v9"
 	"github.com/uptrace/bun"
 	"github.com/uptrace/bun/dialect/pgdialect"
 	"github.com/uptrace/bun/migrate"
@@ -16,7 +17,6 @@ import (
 	command "github.com/Jesuloba-world/xoom-server/commands"
 	"github.com/Jesuloba-world/xoom-server/migrations"
 	"github.com/Jesuloba-world/xoom-server/util"
-
 )
 
 func main() {
@@ -57,13 +57,22 @@ func main() {
 		os.Exit(1)
 	}
 
+	redisClient := redis.NewClient(&redis.Options{
+		Addr: config.RedisUrl,
+	})
+
+	if _, err := redisClient.Ping(ctx).Result(); err != nil {
+		slog.Error("Failed to connect to redis", "error", err)
+		os.Exit(1)
+	}
+
 	app := &cli.App{
-		Name:  "servv",
+		Name:  "xoom",
 		Usage: "a cli to control the application",
 
 		Commands: []*cli.Command{
 			command.NewDBCommand(migrate.NewMigrator(db, migrations.Migrations)),
-			command.HttpCommand(db),
+			command.HttpCommand(db, redisClient),
 		},
 	}
 	if err := app.Run(os.Args); err != nil {

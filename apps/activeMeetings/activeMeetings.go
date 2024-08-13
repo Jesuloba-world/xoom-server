@@ -22,11 +22,9 @@ type ActiveMeeting struct {
 	// Description string    `json:"description"`
 }
 
-func NewActiveMeetingService(redisAddr string) *ActiveMeetingService {
+func NewActiveMeetingService(rdb *redis.Client) *ActiveMeetingService {
 	return &ActiveMeetingService{
-		rdb: redis.NewClient(&redis.Options{
-			Addr: redisAddr,
-		}),
+		rdb: rdb,
 	}
 }
 

@@ -6,6 +6,7 @@ require (
 	github.com/cloudinary/cloudinary-go/v2 v2.7.0
 	github.com/danielgtaylor/huma/v2 v2.19.0
 	github.com/go-resty/resty/v2 v2.13.1
+	github.com/gorilla/websocket v1.5.3
 	github.com/jackc/pgx/v5 v5.6.0
 	github.com/lestrrat-go/jwx v1.2.29
 	github.com/matoous/go-nanoid/v2 v2.1.0
