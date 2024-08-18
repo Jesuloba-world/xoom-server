@@ -57,9 +57,12 @@ func main() {
 		os.Exit(1)
 	}
 
-	redisClient := redis.NewClient(&redis.Options{
-		Addr: config.RedisUrl,
-	})
+	redisOpts, err := redis.ParseURL(config.RedisUrl)
+	if err != nil {
+		slog.Error("Failed to parse redis url", "error", err)
+	}
+
+	redisClient := redis.NewClient(redisOpts)
 
 	if _, err := redisClient.Ping(ctx).Result(); err != nil {
 		slog.Error("Failed to connect to redis", "error", err)
