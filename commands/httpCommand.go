@@ -21,6 +21,7 @@ import (
 	signallingserver "github.com/Jesuloba-world/xoom-server/services/signallingServer"
 	userservice "github.com/Jesuloba-world/xoom-server/services/userService"
 	"github.com/Jesuloba-world/xoom-server/util"
+
 )
 
 func HttpCommand(db *bun.DB, rdb *redis.Client) *cli.Command {
@@ -46,7 +47,7 @@ func startHTTPServer(db *bun.DB, rdb *redis.Client) error {
 	)
 
 	corsMiddleware := cors.New(cors.Options{
-		AllowedOrigins: []string{"http://localhost:3000", "http://192.168.202.180:3000", "https://yourdomain.com"},
+		AllowedOrigins: []string{"http://localhost:3000", "http://192.168.202.180:3000", "https://xoom-ui-development.up.railway.app"},
 		AllowedMethods: []string{"GET", "POST", "PATCH", "PUT", "DELETE", "OPTIONS"},
 		AllowedHeaders: []string{"Accept", "Authorization", "Content-Type", "X-CSRF-Token"},
 		ExposedHeaders: []string{"Link"},
