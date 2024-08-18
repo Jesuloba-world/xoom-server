@@ -25,7 +25,14 @@ func NewDBCommand(migrator *migrate.Migrator) *cli.Command {
 				Usage: "migrate database",
 				Action: func(c *cli.Context) error {
 					if err := migrator.Lock(c.Context); err != nil {
-						return err
+						fmt.Println("Database is locked. Attempting to unlock...")
+						if unlockErr := migrator.Unlock(c.Context); unlockErr != nil {
+							return fmt.Errorf("failed to unlock: %v (original lock error: %v)", unlockErr, err)
+						}
+						fmt.Println("Unlock successful. Retrying migration...")
+						if err := migrator.Lock(c.Context); err != nil {
+							return fmt.Errorf("failed to lock after unlock: %v", err)
+						}
 					}
 					defer migrator.Unlock(c.Context) //nolint:errcheck
 
